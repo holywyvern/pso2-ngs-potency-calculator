@@ -1,0 +1,36 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.ui {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 8px;
+}
+
+.augments {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(2, auto);
+}
+
+.equip {
+  border: 1px solid black;
+  padding: 4px;
+}
+
+.stats {
+  display: grid;
+  gap: 2px;
+  grid-template-columns: auto 1fr;
+}
+
+.flex {
+  display: flex;
+  gap: 8px;
+}
+
+.pair {
+  display: flex;
+  gap: 4px;
+}
