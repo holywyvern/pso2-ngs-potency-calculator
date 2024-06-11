@@ -734,6 +734,9 @@ function App() {
           <EquipWindow index={2} />
           <EquipWindow index={3} />
         </div>
+        <footer>
+          All information comes from the <a href="https://pso2ngs.wiki/wiki/Main_Page">PSO2 NGS Wiki</a>.
+        </footer>
       </ClipboardContext.Provider>
     </EquipmentContext.Provider>
   );

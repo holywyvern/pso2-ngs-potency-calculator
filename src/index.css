@@ -165,3 +165,7 @@ hr {
 .end {
   justify-content: flex-end;
 }
+
+a {
+  color: #22c4b7;
+}
