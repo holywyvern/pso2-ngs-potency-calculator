@@ -128,7 +128,7 @@ class Item {
   }
 
   get dmgRes() {
-    if (!this.equip) return 1;
+    if (!this.equip) return 0;
 
     const base = this.equip.dmgRes || 0;
     return this.augments.reduce(
