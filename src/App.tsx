@@ -472,6 +472,7 @@ const TEXTS = ["Weapon", "Armor 1", "Armor 2", "Armor 3"];
 function WeaponMenu({ index }: { index: number }) {
   return (
     <>
+      <ArmorMenu index={index} />
       <button disabled type="button" className="btn">
         Ex Combos...
       </button>
@@ -486,8 +487,8 @@ const MAX_POTENCY_BUILD: string[] = [
   "Gladia Soul",
   "Mega Triyal",
   "Guaro Triyal",
-  "Wardro Triyal"
-]
+  "Wardro Triyal",
+];
 
 const FLOOR_BUILD: string[] = [
   "Anaddi Deft Parfait",
@@ -496,8 +497,8 @@ const FLOOR_BUILD: string[] = [
   "Gladia Soul",
   "Mega Triyal",
   "Grand Dread Keeper",
-  "Highkvar Domina"
-]
+  "Highkvar Domina",
+];
 
 const BUDGET_BUILD: string[] = [
   "Mega Triyal",
@@ -506,12 +507,12 @@ const BUDGET_BUILD: string[] = [
   "Gigas Maste LC",
   "Gladia Soul LC",
   "Grand Dread Keeper LC",
-  "Highkvar Domina LC"
-]
+  "Highkvar Domina LC",
+];
 
 function findAugments(names: string[]) {
-  const augments = AUGMENTS.filter(i => names.includes(i.name));
-  const ids = augments.map(i => AUGMENTS.indexOf(i));
+  const augments = AUGMENTS.filter((i) => names.includes(i.name));
+  const ids = augments.map((i) => AUGMENTS.indexOf(i));
   while (ids.length < AUGMENT_SLOTS) {
     ids.push(-1);
   }
@@ -519,18 +520,18 @@ function findAugments(names: string[]) {
 }
 
 function ArmorMenu({ index }: { index: number }) {
-  const { equipment } = useEquipment()
+  const { equipment } = useEquipment();
   const item = equipment[index];
 
   const setMaxPotency = () => {
-    item.augmentIds = findAugments(MAX_POTENCY_BUILD)
-  }
+    item.augmentIds = findAugments(MAX_POTENCY_BUILD);
+  };
   const setFloor = () => {
-    item.augmentIds = findAugments(FLOOR_BUILD)
-  }
+    item.augmentIds = findAugments(FLOOR_BUILD);
+  };
   const setBudget = () => {
-    item.augmentIds = findAugments(BUDGET_BUILD)
-  }
+    item.augmentIds = findAugments(BUDGET_BUILD);
+  };
 
   return (
     <>
