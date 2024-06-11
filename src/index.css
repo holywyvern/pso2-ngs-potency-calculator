@@ -34,11 +34,6 @@
   grid-template-columns: repeat(2, auto);
 }
 
-.equip {
-  border: 1px solid black;
-  padding: 4px;
-}
-
 .stats {
   display: grid;
   gap: 2px;
