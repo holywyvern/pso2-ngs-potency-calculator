@@ -90,6 +90,10 @@ img {
   background-color: rgba(38, 47, 51, 1) !important;
 }
 
+.ngs-select__control input {
+  color: white !important;
+}
+
 .ngs-select__menu-list {
   background-color: rgba(38, 47, 51, 1) !important;
 }
@@ -150,4 +154,19 @@ img {
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+.add-ons {
+  display: grid !important;
+  gap: 4px;
+  grid-template-columns: auto 1fr;
+}
+
+hr {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.end {
+  justify-content: flex-end;
 }

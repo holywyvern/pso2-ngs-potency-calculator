@@ -167,6 +167,8 @@ class Equipment {
   armor1: Item;
   armor2: Item;
   armor3: Item;
+  _pp: State<number>;
+  _hp: State<number[]>;
 
   constructor(equipment: {
     classId: State<number>;
@@ -178,6 +180,8 @@ class Equipment {
     armor1AugmentIds: State<number[]>;
     armor2AugmentIds: State<number[]>;
     armor3AugmentIds: State<number[]>;
+    hp: State<number[]>;
+    pp: State<number>;
   }) {
     this._classId = equipment.classId;
     this.weapon = new Item(
@@ -188,6 +192,8 @@ class Equipment {
     this.armor1 = new Item(equipment.armor1Id, equipment.armor1AugmentIds);
     this.armor2 = new Item(equipment.armor2Id, equipment.armor2AugmentIds);
     this.armor3 = new Item(equipment.armor3Id, equipment.armor3AugmentIds);
+    this._hp = equipment.hp;
+    this._pp = equipment.pp;
   }
 
   get classId() {
@@ -232,11 +238,24 @@ class Equipment {
   }
 
   get hp() {
-    return this.equipment.reduce((i, e) => i + e.hp, this.class.hp);
+    return (
+      this.equipment.reduce((i, e) => i + e.hp, this.class.hp) +
+      this._hp[0].reduce((i, v) => i + v, 0)
+    );
+  }
+
+  hpAddOn(value: number[]) {
+    this._hp[1](value);
   }
 
   get pp() {
-    return this.equipment.reduce((i, e) => i + e.pp, this.class.pp);
+    return (
+      this.equipment.reduce((i, e) => i + e.pp, this.class.pp) + this._pp[0]
+    );
+  }
+
+  ppAddOn(value: number) {
+    this._pp[1](value);
   }
 
   get melee() {
@@ -258,6 +277,8 @@ class Equipment {
       armor1: this.armor1.saveData,
       armor2: this.armor2.saveData,
       armor3: this.armor3.saveData,
+      pp: this._pp[0],
+      hp: this._hp[0],
     };
     return encodeURIComponent(btoa(JSON.stringify(data)));
   }
@@ -270,6 +291,12 @@ class Equipment {
       this.armor1.saveData = data.armor1;
       this.armor2.saveData = data.armor2;
       this.armor3.saveData = data.armor3;
+      this.ppAddOn(data.pp || 0);
+      const hp = data.hp || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      while (hp.length < CLASSES.length) {
+        hp.push(0);
+      }
+      this.hpAddOn(hp);
     } catch (error) {
       console.error(error);
     }
@@ -290,6 +317,8 @@ function useEquipmentState() {
   const armor1AugmentIds = useState(() => [-1, -1, -1, -1, -1, -1, -1]);
   const armor2AugmentIds = useState(() => [-1, -1, -1, -1, -1, -1, -1]);
   const armor3AugmentIds = useState(() => [-1, -1, -1, -1, -1, -1, -1]);
+  const pp = useState(0);
+  const hp = useState(() => CLASSES.map(() => 0));
   return new Equipment({
     classId,
     weaponId,
@@ -300,13 +329,15 @@ function useEquipmentState() {
     armor1AugmentIds,
     armor2AugmentIds,
     armor3AugmentIds,
+    hp,
+    pp,
   });
 }
 
-const Context = createContext<Equipment | null>(null);
+const EquipmentContext = createContext<Equipment | null>(null);
 
 export function useEquipment() {
-  return useContext(Context)!;
+  return useContext(EquipmentContext)!;
 }
 
 const ARMOR_OPTIONS = [
@@ -440,7 +471,16 @@ const TEXTS = ["Weapon", "Armor 1", "Armor 2", "Armor 3"];
 
 function EquipWindow({ index }: { index: number }) {
   const { equipment } = useEquipment();
+  const clipboard = useClipboard();
   const item = equipment[index];
+  const pasteAugments = () => {
+    if (!clipboard.augments) return;
+
+    item.augmentIds = clipboard.augments;
+  };
+  const copyAugments = () => {
+    clipboard.copyAugments(item.augmentIds);
+  };
   return (
     <form onSubmit={(e) => e.preventDefault()} className="window equip">
       <div className="header">{TEXTS[index]}</div>
@@ -462,6 +502,20 @@ function EquipWindow({ index }: { index: number }) {
               disabled={!item.equip}
             />
           ))}
+        </div>
+        <hr />
+        <div className="flex end">
+          <button className="btn" type="button" onClick={copyAugments}>
+            Copy Augments
+          </button>
+          <button
+            disabled={!clipboard.augments}
+            onClick={pasteAugments}
+            className="btn"
+            type="button"
+          >
+            Paste Augments
+          </button>
         </div>
       </div>
     </form>
@@ -587,20 +641,101 @@ function ClassSelect() {
   );
 }
 
+function HpAddOn({ index }: { index: number }) {
+  const equipment = useEquipment();
+  return (
+    <>
+      <div>HP Up ({CLASSES[index].name.slice(0, 2).toUpperCase()}) Level</div>
+      <input
+        type="number"
+        min={0}
+        max={20}
+        step={1}
+        value={equipment._hp[0][index]}
+        onChange={(e) => {
+          const hp = [...equipment._hp[0]];
+          hp[index] = Math.floor(e.target.valueAsNumber);
+          equipment.hpAddOn(hp);
+        }}
+      />
+    </>
+  );
+}
+
+function PpAddOn() {
+  const equipment = useEquipment();
+  return (
+    <>
+      <div>Pp Up (WA) Level</div>
+      <input
+        type="number"
+        min={0}
+        max={20}
+        step={1}
+        value={equipment._pp[0]}
+        onChange={(e) => {
+          equipment.ppAddOn(Math.floor(e.target.valueAsNumber));
+        }}
+      />
+    </>
+  );
+}
+
+function AddOnsWindow() {
+  return (
+    <div className="window">
+      <div className="header">Add-On Setup</div>
+      <div className="body add-ons">
+        {CLASSES.map((_, index) => (
+          <HpAddOn key={index} index={index} />
+        ))}
+        <div />
+        <div />
+        <PpAddOn />
+      </div>
+    </div>
+  );
+}
+
+interface ClipboardState {
+  augments: number[] | null;
+  copyAugments(augments: number[]): void;
+}
+
+function useClipboardState() {
+  const [augments, setAugments] = useState<number[] | null>(null);
+  const copyAugments = (augments: number[]) => {
+    setAugments(augments);
+  };
+  return { augments, copyAugments } satisfies ClipboardState;
+}
+
+const ClipboardContext = createContext<ClipboardState | null>(null);
+
+function useClipboard() {
+  return useContext(ClipboardContext)!;
+}
+
 function App() {
+  const clipboard = useClipboardState();
   const equipment = useEquipmentState();
 
   return (
-    <Context.Provider value={equipment}>
-      <PlayerStats />
-      <SaveSystem />
-      <div className="ui">
-        <EquipWindow index={0} />
-        <EquipWindow index={1} />
-        <EquipWindow index={2} />
-        <EquipWindow index={3} />
-      </div>
-    </Context.Provider>
+    <EquipmentContext.Provider value={equipment}>
+      <ClipboardContext.Provider value={clipboard}>
+        <div className="flex stats-window">
+          <PlayerStats />
+          <AddOnsWindow />
+        </div>
+        <SaveSystem />
+        <div className="ui">
+          <EquipWindow index={0} />
+          <EquipWindow index={1} />
+          <EquipWindow index={2} />
+          <EquipWindow index={3} />
+        </div>
+      </ClipboardContext.Provider>
+    </EquipmentContext.Provider>
   );
 }
 
