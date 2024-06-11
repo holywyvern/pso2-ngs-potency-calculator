@@ -171,7 +171,7 @@ class Equipment {
   }
 
   get technique() {
-    return round(this.equipment.reduce((i, e) => i * e.ranged, 1));
+    return round(this.equipment.reduce((i, e) => i * e.technique, 1));
   }
 
   get saveString() {
