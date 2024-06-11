@@ -34,3 +34,18 @@
   display: flex;
   gap: 4px;
 }
+
+.save {
+  padding: 4px;
+}
+
+.save pre {
+  margin: 0;
+  border: 1px solid black;
+  padding: 4px;
+}
+
+img {
+  width: 16px;
+  height: 16px;
+}

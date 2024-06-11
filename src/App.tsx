@@ -4,6 +4,7 @@ import {
   SetStateAction,
   createContext,
   useContext,
+  useEffect,
 } from "react";
 
 import Select from "react-select";
@@ -16,7 +17,8 @@ import { AUGMENTS } from "./data/augments";
 
 type State<T> = [T, Dispatch<SetStateAction<T>>];
 
-const ROUNDING = 10000
+const AUGMENT_SLOTS = 7;
+const ROUNDING = 10000;
 
 function round(num: number) {
   return Math.floor(num * ROUNDING) / ROUNDING;
@@ -101,6 +103,29 @@ class Item {
       )
     );
   }
+
+  get saveData() {
+    return {
+      item: this.equip?.name || "",
+      augments: this.augments.map((i) => i.name),
+    };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  set saveData(value: any) {
+    if (!value) return;
+
+    const list = this.weapon ? WEAPONS : ARMORS;
+    this.equipId = list.findIndex((i) => i.name === value?.item);
+    const augments =
+      value.augments?.map((name: string) =>
+        AUGMENTS.findIndex((i) => i.name === name)
+      ) || [];
+    while (augments.length < AUGMENT_SLOTS) {
+      augments.push(-1);
+    }
+    this.augmentIds = augments;
+  }
 }
 
 class Equipment {
@@ -147,6 +172,32 @@ class Equipment {
 
   get technique() {
     return round(this.equipment.reduce((i, e) => i * e.ranged, 1));
+  }
+
+  get saveString() {
+    const data = {
+      weapon: this.weapon.saveData,
+      armor1: this.armor1.saveData,
+      armor2: this.armor2.saveData,
+      armor3: this.armor3.saveData,
+    };
+    return encodeURIComponent(btoa(JSON.stringify(data)));
+  }
+
+  set saveString(value: string) {
+    try {
+      const data = JSON.parse(atob(decodeURIComponent(value)));
+      this.weapon.saveData = data.weapon;
+      this.armor1.saveData = data.armor1;
+      this.armor2.saveData = data.armor2;
+      this.armor3.saveData = data.armor3;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  get saveURL() {
+    return `${window.location.href.split("?")[0]}?save=${this.saveString}`;
   }
 }
 
@@ -215,7 +266,7 @@ function WeaponSelect({ index }: { index: number }) {
   );
 }
 
-const AUGMENT_INDEXES = [0, 1, 2, 3, 4, 5, 6];
+const AUGMENT_INDEXES = new Array(AUGMENT_SLOTS).fill(null).map((_, i) => i);
 
 const AUGMENT_OPTIONS = [
   { label: "(Empty)", value: -1 },
@@ -354,12 +405,30 @@ function PlayerStats() {
   );
 }
 
+const params = new URLSearchParams(location.search);
+
+function SaveSystem() {
+  const equipment = useEquipment();
+  useEffect(() => {
+    history.replaceState({}, "", `?equip=${equipment.saveString}`);
+  }, [equipment.saveString]);
+  useEffect(() => {
+    const save = params.get("equip");
+    if (save) {
+      equipment.saveString = save;
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params]);
+  return null;
+}
+
 function App() {
   const equipment = useEquipmentState();
 
   return (
     <Context.Provider value={equipment}>
       <PlayerStats />
+      <SaveSystem />
       <div className="ui">
         <EquipWindow index={0} />
         <EquipWindow index={1} />
