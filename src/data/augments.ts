@@ -131,7 +131,7 @@ const ANADDI_TYPES = [
 
 export const AUGMENTS: Augment[] = [
   ...EX_TYPES.reduce(
-    (result, { name, potency }) => [
+    (result, { name, potency, floor }) => [
       ...result,
       ...EX_MODS.map(({ hp, pp, dmgRes, downRes, ...mod }) => ({
         name: `EX ${name} ${mod.name}`,
@@ -140,6 +140,7 @@ export const AUGMENTS: Augment[] = [
         technique: potency,
         hp,
         pp,
+        floor,
         dmgRes,
         burn: downRes,
         freeze: downRes,
@@ -593,6 +594,20 @@ export const AUGMENTS: Augment[] = [
     ranged: 3.5,
     technique: 3.5,
   },
-  { name: "Mega Triyal", pp: 2, melee: 3.5, ranged: 3.5, technique: 3.5 },
-  { name: "Mega Triyal S", pp: 2, melee: 3.5, ranged: 3.5, technique: 3.5 },
+  {
+    name: "Mega Triyal",
+    pp: 2,
+    melee: 3.5,
+    ranged: 3.5,
+    technique: 3.5,
+    dmgRes: 1,
+  },
+  {
+    name: "Mega Triyal S",
+    pp: 2,
+    melee: 3.5,
+    ranged: 3.5,
+    technique: 3.5,
+    dmgRes: 1,
+  },
 ].map((i) => new Augment(i));

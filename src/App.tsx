@@ -7,21 +7,29 @@ import {
   useEffect,
 } from "react";
 
-import Select from "react-select";
+import Select, { components } from "react-select";
 
 import "./App.css";
 
-import { WEAPONS } from "./data/weapon_series";
+import { Weapon, WEAPONS } from "./data/weapon_series";
 import { ARMORS } from "./data/armors";
 import { AUGMENTS } from "./data/augments";
+import { CLASSES } from "./data/classes";
+
+const { Option, SingleValue } = components;
 
 type State<T> = [T, Dispatch<SetStateAction<T>>];
 
 const AUGMENT_SLOTS = 7;
 const ROUNDING = 10000;
+const DISPLAYED_ROUNDING = 10;
 
 function round(num: number) {
   return Math.floor(num * ROUNDING) / ROUNDING;
+}
+
+function showNumber(num: number) {
+  return Math.floor(num * DISPLAYED_ROUNDING) / DISPLAYED_ROUNDING;
 }
 
 class Item {
@@ -37,6 +45,14 @@ class Item {
 
   get armor() {
     return !this.weapon;
+  }
+
+  get attack() {
+    return this.equip?.attack || 0;
+  }
+
+  get defense() {
+    return this.equip?.defense || 0;
   }
 
   get equipId() {
@@ -104,6 +120,23 @@ class Item {
     );
   }
 
+  get floor() {
+    return this.augments.reduce(
+      (floor, a) => (floor * (100 + a.floor)) / 100,
+      1
+    );
+  }
+
+  get dmgRes() {
+    if (!this.equip) return 1;
+
+    const base = this.equip.dmgRes || 0;
+    return this.augments.reduce(
+      (i, a) => i + ((100 - i) * a.dmgRes) / 100,
+      base
+    );
+  }
+
   get saveData() {
     return {
       item: this.equip?.name || "",
@@ -129,12 +162,14 @@ class Item {
 }
 
 class Equipment {
+  _classId: State<number>;
   weapon: Item;
   armor1: Item;
   armor2: Item;
   armor3: Item;
 
   constructor(equipment: {
+    classId: State<number>;
     weaponId: State<number>;
     armor1Id: State<number>;
     armor2Id: State<number>;
@@ -144,6 +179,7 @@ class Equipment {
     armor2AugmentIds: State<number[]>;
     armor3AugmentIds: State<number[]>;
   }) {
+    this._classId = equipment.classId;
     this.weapon = new Item(
       equipment.weaponId,
       equipment.weaponAugmentIds,
@@ -154,12 +190,53 @@ class Equipment {
     this.armor3 = new Item(equipment.armor3Id, equipment.armor3AugmentIds);
   }
 
+  get classId() {
+    return this._classId[0];
+  }
+
+  set classId(value: number) {
+    this._classId[1](value);
+  }
+
+  get floor() {
+    if (!this.weapon.equip) return 0;
+
+    return this.equipment.reduce(
+      (floor, e) => floor * e.floor,
+      (this.weapon.equip as Weapon).floor
+    );
+  }
+
+  get dmgRes() {
+    return this.equipment.reduce((i, a) => i + ((100 - i) * a.dmgRes) / 100, 0);
+  }
+
+  get class() {
+    return CLASSES[this.classId];
+  }
+
   get armors() {
     return [this.armor1, this.armor2, this.armor3];
   }
 
   get equipment() {
     return [this.weapon, ...this.armors];
+  }
+
+  get attack() {
+    return this.class.attack + this.weapon.attack;
+  }
+
+  get defense() {
+    return this.equipment.reduce((i, e) => i + e.defense, this.class.defense);
+  }
+
+  get hp() {
+    return this.equipment.reduce((i, e) => i + e.hp, this.class.hp);
+  }
+
+  get pp() {
+    return this.equipment.reduce((i, e) => i + e.pp, this.class.pp);
   }
 
   get melee() {
@@ -176,6 +253,7 @@ class Equipment {
 
   get saveString() {
     const data = {
+      class: this.classId,
       weapon: this.weapon.saveData,
       armor1: this.armor1.saveData,
       armor2: this.armor2.saveData,
@@ -187,6 +265,7 @@ class Equipment {
   set saveString(value: string) {
     try {
       const data = JSON.parse(atob(decodeURIComponent(value)));
+      this.classId = data.class || 0;
       this.weapon.saveData = data.weapon;
       this.armor1.saveData = data.armor1;
       this.armor2.saveData = data.armor2;
@@ -202,6 +281,7 @@ class Equipment {
 }
 
 function useEquipmentState() {
+  const classId = useState(0);
   const weaponId = useState(-1);
   const armor1Id = useState(-1);
   const armor2Id = useState(-1);
@@ -211,6 +291,7 @@ function useEquipmentState() {
   const armor2AugmentIds = useState(() => [-1, -1, -1, -1, -1, -1, -1]);
   const armor3AugmentIds = useState(() => [-1, -1, -1, -1, -1, -1, -1]);
   return new Equipment({
+    classId,
     weaponId,
     armor1Id,
     armor2Id,
@@ -238,6 +319,8 @@ function ArmorSelect({ index }: { index: number }) {
   const item = equipment[index];
   return (
     <Select
+      className="select"
+      classNamePrefix="ngs-select"
       options={ARMOR_OPTIONS}
       value={ARMOR_OPTIONS[item.equipId + 1]}
       onChange={(i) => {
@@ -257,6 +340,8 @@ function WeaponSelect({ index }: { index: number }) {
   const item = equipment[index];
   return (
     <Select
+      className="select"
+      classNamePrefix="ngs-select"
       options={WEAPON_OPTIONS}
       value={WEAPON_OPTIONS[item.equipId + 1]}
       onChange={(i) => {
@@ -290,6 +375,8 @@ function AugmentSelect({
   const id = item.augmentIds[index] + 1;
   return (
     <Select
+      className="select"
+      classNamePrefix="ngs-select"
       isDisabled={disabled}
       options={AUGMENT_OPTIONS}
       value={AUGMENT_OPTIONS[id]}
@@ -327,19 +414,19 @@ function EquipStats({ index }: { index: number }) {
         <div className="pair">
           <img src="melee.png" />
           <div className="number">
-            {numberFormatter.format((item.melee - 1) * 100)}%
+            {numberFormatter.format(showNumber((item.melee - 1) * 100))}%
           </div>
         </div>
         <div className="pair">
           <img src="ranged.png" />
           <div className="number">
-            {numberFormatter.format((item.ranged - 1) * 100)}%
+            {numberFormatter.format(showNumber((item.ranged - 1) * 100))}%
           </div>
         </div>
         <div className="pair">
           <img src="technique.png" />
           <div className="number">
-            {numberFormatter.format((item.technique - 1) * 100)}%
+            {numberFormatter.format(showNumber((item.technique - 1) * 100))}%
           </div>
         </div>
       </div>
@@ -349,28 +436,33 @@ function EquipStats({ index }: { index: number }) {
   );
 }
 
+const TEXTS = ["Weapon", "Armor 1", "Armor 2", "Armor 3"];
+
 function EquipWindow({ index }: { index: number }) {
   const { equipment } = useEquipment();
   const item = equipment[index];
   return (
-    <form onSubmit={(e) => e.preventDefault()} className="equip">
-      {item.weapon ? (
-        <WeaponSelect index={index} />
-      ) : (
-        <ArmorSelect index={index} />
-      )}
-      <hr />
-      <EquipStats index={index} />
-      <hr />
-      <div className="augments">
-        {AUGMENT_INDEXES.map((i) => (
-          <AugmentSelect
-            key={i}
-            equip={index}
-            index={i}
-            disabled={!item.equip}
-          />
-        ))}
+    <form onSubmit={(e) => e.preventDefault()} className="window equip">
+      <div className="header">{TEXTS[index]}</div>
+      <div className="body">
+        {item.weapon ? (
+          <WeaponSelect index={index} />
+        ) : (
+          <ArmorSelect index={index} />
+        )}
+        <hr />
+        <EquipStats index={index} />
+        <hr />
+        <div className="augments">
+          {AUGMENT_INDEXES.map((i) => (
+            <AugmentSelect
+              key={i}
+              equip={index}
+              index={i}
+              disabled={!item.equip}
+            />
+          ))}
+        </div>
       </div>
     </form>
   );
@@ -379,25 +471,56 @@ function EquipWindow({ index }: { index: number }) {
 function PlayerStats() {
   const equipment = useEquipment();
   return (
-    <div className="stats">
-      <div className="system">Weapon Up</div>
-      <div className="flex">
-        <div className="pair">
-          <img src="melee.png" />
-          <div className="number">
-            {numberFormatter.format((equipment.melee - 1) * 100)}%
-          </div>
+    <div className="window align-between stats-window">
+      <div className="header">Player Stats</div>
+      <div className="body">
+        <ClassSelect />
+        <div className="info">
+          <div className="system">HP</div>
+          <div>{equipment.hp}</div>
+          <div className="system">Attack</div>
+          <div>{equipment.attack}</div>
+          <div className="system">PP</div>
+          <div>{equipment.pp}</div>
+          <div className="system">Defense</div>
+          <div>{equipment.defense}</div>
+          <div className="system">Damage Adj.</div>
+          <div>{showNumber(equipment.floor)}%</div>
+          <div>~</div>
+          <div>100%</div>
+          <div className="system">Damage Resist</div>
+          <div>{showNumber(equipment.dmgRes)}%</div>
         </div>
-        <div className="pair">
-          <img src="ranged.png" />
-          <div className="number">
-            {numberFormatter.format((equipment.ranged - 1) * 100)}%
-          </div>
-        </div>
-        <div className="pair">
-          <img src="technique.png" />
-          <div className="number">
-            {numberFormatter.format((equipment.technique - 1) * 100)}%
+        <div className="stats">
+          <div className="system">Weapon Up</div>
+          <div className="flex align-between">
+            <div className="pair">
+              <img src="melee.png" />
+              <div className="number">
+                {numberFormatter.format(
+                  showNumber((equipment.melee - 1) * 100)
+                )}
+                %
+              </div>
+            </div>
+            <div className="pair">
+              <img src="ranged.png" />
+              <div className="number">
+                {numberFormatter.format(
+                  showNumber((equipment.ranged - 1) * 100)
+                )}
+                %
+              </div>
+            </div>
+            <div className="pair">
+              <img src="technique.png" />
+              <div className="number">
+                {numberFormatter.format(
+                  showNumber((equipment.technique - 1) * 100)
+                )}
+                %
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -417,9 +540,51 @@ function SaveSystem() {
     if (save) {
       equipment.saveString = save;
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
   return null;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const IconOption = (props: any) => {
+  return (
+    <Option {...props}>
+      <img src={props.data.icon} />
+      {props.data.label}
+    </Option>
+  );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const IconValue = (props: any) => {
+  return (
+    <SingleValue {...props}>
+      <img src={props.data.icon} />
+      {props.data.label}
+    </SingleValue>
+  );
+};
+
+const CLASS_OPTIONS = CLASSES.map(({ name }, value) => ({
+  label: name,
+  icon: `${name.toLocaleLowerCase()}.png`,
+  value,
+}));
+
+function ClassSelect() {
+  const equipment = useEquipment();
+  return (
+    <Select
+      className="select"
+      classNamePrefix="ngs-select"
+      options={CLASS_OPTIONS}
+      value={CLASS_OPTIONS[equipment.classId]}
+      onChange={(value) => {
+        equipment.classId = value?.value || 0;
+      }}
+      components={{ Option: IconOption, SingleValue: IconValue }}
+    />
+  );
 }
 
 function App() {

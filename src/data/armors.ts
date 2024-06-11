@@ -2,7 +2,7 @@ export class Armor {
   name: string;
   hp: number;
   pp: number;
-  damageRes: number;
+  dmgRes: number;
   burn: number;
   freeze: number;
   shock: number;
@@ -20,7 +20,7 @@ export class Armor {
     name,
     hp,
     pp,
-    damageRes,
+    dmgRes,
     defense,
     melee,
     ranged,
@@ -37,7 +37,7 @@ export class Armor {
     this.name = name;
     this.hp = hp || 0;
     this.pp = pp || 0;
-    this.damageRes = damageRes || 0;
+    this.dmgRes = dmgRes || 0;
     this.burn = burn || 0;
     this.freeze = freeze || 0;
     this.shock = shock || 0;
@@ -50,6 +50,10 @@ export class Armor {
     this.ranged = ranged || 0;
     this.technique = technique || 0;
     this.rarity = rarity || 1;
+  }
+
+  get attack() {
+    return 0;
   }
 }
 
@@ -97,7 +101,7 @@ export const ARMORS: Armor[] = [
     technique: 0,
     ice: 20,
     rarity: 9,
-    damageRes: 1,
+    dmgRes: 1,
   },
   {
     name: "Einea Armor: Belta",
@@ -109,7 +113,7 @@ export const ARMORS: Armor[] = [
     technique: 5.5,
     ice: 20,
     rarity: 9,
-    damageRes: 1,
+    dmgRes: 1,
   },
   {
     name: "Einea Armor: Sheza",
@@ -121,6 +125,6 @@ export const ARMORS: Armor[] = [
     technique: 5.5,
     ice: 20,
     rarity: 9,
-    damageRes: 1,
+    dmgRes: 1,
   },
 ].map((i) => new Armor(i));

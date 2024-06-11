@@ -5,20 +5,27 @@ export class Weapon {
   attack: number;
   element?: Element;
   rarity: number;
+  floor: number;
 
   constructor({
     name,
     attack,
     element,
     rarity,
+    floor,
   }: Partial<Weapon> & { name: string }) {
     this.name = name;
     this.attack = attack || 0;
     this.element = element;
     this.rarity = rarity || 1;
+    this.floor = floor || 50;
   }
 
   get melee() {
+    return 0;
+  }
+
+  get dmgRes() {
     return 0;
   }
 
