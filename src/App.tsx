@@ -469,6 +469,84 @@ function EquipStats({ index }: { index: number }) {
 
 const TEXTS = ["Weapon", "Armor 1", "Armor 2", "Armor 3"];
 
+function WeaponMenu({ index }: { index: number }) {
+  return (
+    <>
+      <button disabled type="button" className="btn">
+        Ex Combos...
+      </button>
+    </>
+  );
+}
+
+const MAX_POTENCY_BUILD: string[] = [
+  "Anaddi Deft Parfait",
+  "Lux Halphinale",
+  "Glan Gigas Maste",
+  "Gladia Soul",
+  "Mega Triyal",
+  "Guaro Triyal",
+  "Wardro Triyal"
+]
+
+const FLOOR_BUILD: string[] = [
+  "Anaddi Deft Parfait",
+  "Lux Halphinale",
+  "Glan Gigas Maste",
+  "Gladia Soul",
+  "Mega Triyal",
+  "Grand Dread Keeper",
+  "Highkvar Domina"
+]
+
+const BUDGET_BUILD: string[] = [
+  "Mega Triyal",
+  "Wardro Triyal",
+  "Halphinale LC",
+  "Gigas Maste LC",
+  "Gladia Soul LC",
+  "Grand Dread Keeper LC",
+  "Highkvar Domina LC"
+]
+
+function findAugments(names: string[]) {
+  const augments = AUGMENTS.filter(i => names.includes(i.name));
+  const ids = augments.map(i => AUGMENTS.indexOf(i));
+  while (ids.length < AUGMENT_SLOTS) {
+    ids.push(-1);
+  }
+  return ids;
+}
+
+function ArmorMenu({ index }: { index: number }) {
+  const { equipment } = useEquipment()
+  const item = equipment[index];
+
+  const setMaxPotency = () => {
+    item.augmentIds = findAugments(MAX_POTENCY_BUILD)
+  }
+  const setFloor = () => {
+    item.augmentIds = findAugments(FLOOR_BUILD)
+  }
+  const setBudget = () => {
+    item.augmentIds = findAugments(BUDGET_BUILD)
+  }
+
+  return (
+    <>
+      <button onClick={setMaxPotency} type="button" className="btn">
+        Max Potency Build
+      </button>
+      <button onClick={setFloor} type="button" className="btn">
+        Floor Build
+      </button>
+      <button onClick={setBudget} type="button" className="btn">
+        Budget Build
+      </button>
+    </>
+  );
+}
+
 function EquipWindow({ index }: { index: number }) {
   const { equipment } = useEquipment();
   const clipboard = useClipboard();
@@ -505,6 +583,12 @@ function EquipWindow({ index }: { index: number }) {
         </div>
         <hr />
         <div className="flex end">
+          {item.weapon ? (
+            <WeaponMenu index={index} />
+          ) : (
+            <ArmorMenu index={index} />
+          )}
+          <div />
           <button className="btn" type="button" onClick={copyAugments}>
             Copy Augments
           </button>
@@ -735,7 +819,8 @@ function App() {
           <EquipWindow index={3} />
         </div>
         <footer>
-          All information comes from the <a href="https://pso2ngs.wiki/wiki/Main_Page">PSO2 NGS Wiki</a>.
+          All information comes from the{" "}
+          <a href="https://pso2ngs.wiki/wiki/Main_Page">PSO2 NGS Wiki</a>.
         </footer>
       </ClipboardContext.Provider>
     </EquipmentContext.Provider>
