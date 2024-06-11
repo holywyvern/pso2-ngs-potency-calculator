@@ -15,7 +15,7 @@ export class Class {
     this.attack = attack || 0;
     this.defense = defense || 0;
     this.hp = hp || 0;
-    this.pp = 150;
+    this.pp = 100;
   }
 }
 
