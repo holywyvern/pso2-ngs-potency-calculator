@@ -1,18 +1,26 @@
-:root {
+
+html, body {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   color: white;
   text-shadow: #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px,
     #000 0px 0px 1px, #000 0px 0px 1px, #000 0px 0px 1px;
   -webkit-font-smoothing: antialiased;
   background: rgb(1, 0, 15);
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 #root {
+  display: flex;
+  flex-direction: column;
   color: white;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow: auto;
+  overflow-y: scroll;
+  position: absolute;
+  inset: 0;
 }
 
 #modal {
