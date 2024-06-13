@@ -1237,6 +1237,43 @@ export const AUGMENTS: Augment[] = (
       ],
       [] as Props[]
     ),
+    // Secreta Augments
+    {
+      name: "Alts Secreta I",
+      hp: -10,
+      melee: 1,
+      ranged: 1,
+      technique: 1,
+      floor: 1,
+      dmgRes: -1.5
+    },
+    {
+      name: "Alts Secreta II",
+      hp: -10,
+      melee: 1.5,
+      ranged: 1.5,
+      technique: 1.5,
+      floor: 1.5,
+      dmgRes: -1.5
+    },
+    {
+      name: "Alts Secreta III",
+      hp: -10,
+      melee: 2,
+      ranged: 2,
+      technique: 2,
+      floor: 2,
+      dmgRes: -1.5
+    },
+    {
+      name: "Alts Secreta IV",
+      hp: -10,
+      melee: 2.5,
+      ranged: 2.5,
+      technique: 2.5,
+      floor: 2.5,
+      dmgRes: -1.5
+    },
     // Halphinale Augments
     { name: "Halphinale", bp: 12, melee: 4, ranged: 4, technique: 4, hp: 15, pp: 5 },
     { name: "Halphinale S", bp: 12, melee: 4, ranged: 4, technique: 4, hp: 15, pp: 5 },
