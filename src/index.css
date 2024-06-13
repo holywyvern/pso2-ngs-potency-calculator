@@ -21,6 +21,12 @@
   overflow: hidden;
 }
 
+.app {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .system {
   color: rgb(154, 209, 231);
 }
@@ -215,7 +221,7 @@ a {
 .modal {
   overflow: hidden;
   display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
+  position: absolute; /* Stay in place */
   z-index: 1; /* Sit on top */
   inset: 0;
   width: 100%; /* Full width */
