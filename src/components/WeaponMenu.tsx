@@ -15,7 +15,7 @@ const BIS_AUGMENTS = [
   "Anaddi Deft Parfait",
   "Lux Halphinale",
   "Glan Gigas Maste",
-  "Gladia Soul",
+  "Gran Gladia Soul",
 ];
 const BUDGET_AUGMENTS = [
   "Mega Triyal",

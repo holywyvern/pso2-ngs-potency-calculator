@@ -756,6 +756,14 @@ export const AUGMENTS: Augment[] = (
       hp: 20,
       pp: 6,
     },
+    {
+      name: "Gran Gladia Soul",
+      melee: 4.75,
+      ranged: 4.75,
+      technique: 4.75,
+      hp: 25,
+      pp: 7,
+    },
     // Enemy Souls
     { name: "Daityl Soul I", pp: 5, melee: 1, bp: 7 },
     { name: "Daityl Soul II", pp: 5, melee: 2, bp: 8 },
