@@ -18,7 +18,7 @@ const FLOOR_BUILD: string[] = [
   "Glan Gigas Maste",
   "Gran Gladia Soul",
   "Mega Triyal",
-  "Grand Dread Keeper",
+  "Grand Dread Keeper II",
   "Highkvar Domina",
 ];
 
