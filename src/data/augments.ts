@@ -524,6 +524,24 @@ export const AUGMENTS: Augment[] = (
       dmgRes: 1,
       bp: 14,
     },
+    {
+      name: "Mega Triyal LC",
+      pp: 2,
+      melee: 3.25,
+      ranged: 3.25,
+      technique: 3.25,
+      dmgRes: 1,
+      bp: 14,
+    },
+    {
+      name: "Mega Triyal LCS",
+      pp: 2,
+      melee: 3.25,
+      ranged: 3.25,
+      technique: 3.25,
+      dmgRes: 1,
+      bp: 14,
+    },
     // Dread Augments
     { name: "Dread Keeper I", hp: 10, pp: 3, floor: 1, dmgRes: 1, bp: 7 },
     {

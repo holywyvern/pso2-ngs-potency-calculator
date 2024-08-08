@@ -127,4 +127,16 @@ export const ARMORS: Armor[] = [
     rarity: 9,
     dmgRes: 1,
   },
+  {
+    name: "Ektasis Armor",
+    defense: 138,
+    hp: 0,
+    pp: 0,
+    melee: 6,
+    ranged: 6,
+    technique: 6,
+    ice: 0,
+    rarity: 10,
+    dmgRes: 0,
+  },
 ].map((i) => new Armor(i));
