@@ -542,6 +542,22 @@ export const AUGMENTS: Augment[] = (
       dmgRes: 1,
       bp: 14,
     },
+    {
+      name: "Giga Triyal",
+      pp: 2,
+      melee: 4.5,
+      ranged: 4.5,
+      technique: 4.5,
+      dmgRes: 1,
+      bp: 14,
+      burn: 5,
+      freeze: 5,
+      panic: 5,
+      blind: 5,
+      poison: 5,
+      shock: 5,
+      stun: 5,
+    },
     // Dread Augments
     { name: "Dread Keeper I", hp: 10, pp: 3, floor: 1, dmgRes: 1, bp: 7 },
     {
@@ -733,6 +749,16 @@ export const AUGMENTS: Augment[] = (
       bp: 13,
     },
     {
+      name: "Highstira Domina",
+      pp: 6,
+      melee: 3.5,
+      ranged: 3.5,
+      technique: 3.5,
+      floor: 2.75,
+      bp: 12,
+      dmgRes: -1,
+    },
+    {
       name: "Highael Domina S",
       hp: 10,
       pp: 4,
@@ -759,6 +785,16 @@ export const AUGMENTS: Augment[] = (
       technique: 3,
       floor: 2.5,
       bp: 13,
+    },
+    {
+      name: "Highstira Domina S",
+      pp: 6,
+      melee: 3.5,
+      ranged: 3.5,
+      technique: 3.5,
+      floor: 2.75,
+      bp: 12,
+      dmgRes: -1,
     },
     // EX Augments
     ...EX_TYPES.reduce(

@@ -7,7 +7,7 @@ const MAX_POTENCY_BUILD: string[] = [
   "Lux Halphinale",
   "Glan Gigas Maste",
   "Gran Gladia Soul",
-  "Mega Triyal",
+  "Giga Triyal",
   "Guaro Triyal",
   "Wardro Triyal",
 ];
@@ -17,9 +17,9 @@ const FLOOR_BUILD: string[] = [
   "Lux Halphinale",
   "Glan Gigas Maste",
   "Gran Gladia Soul",
-  "Mega Triyal",
+  "Giga Triyal",
   "Grand Dread Keeper II",
-  "Highkvar Domina",
+  "Highstira Domina",
 ];
 
 const BUDGET_BUILD: string[] = [

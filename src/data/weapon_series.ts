@@ -167,7 +167,9 @@ export class WeaponSeries {
 
 export const WEAPON_SERIES: WeaponSeries[] = (
   [
+    { name: "Duo Selio", attack: 1197, rarity: 11 },
     { name: "Wingard", attack: 1176, rarity: 11 },
+    { name: "Exelio", attack: 1154, rarity: 11 },
     { name: "Eredim", attack: 1153, rarity: 11 },
     {
       name: "Xover Laluz Re-L",
