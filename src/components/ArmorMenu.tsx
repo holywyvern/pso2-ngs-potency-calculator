@@ -8,7 +8,7 @@ const MAX_POTENCY_BUILD: string[] = [
   "Glan Gigas Maste",
   "Gran Gladia Soul",
   "Giga Triyal",
-  "Guaro Triyal",
+  "Highstira Domina",
   "Wardro Triyal",
 ];
 
