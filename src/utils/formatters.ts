@@ -3,5 +3,5 @@ export const numberFormatter = Intl.NumberFormat("en-US", {
 });
 
 export function displayNumber(num: number) {
-  return num.toFixed(1);
+  return parseFloat(num.toFixed(1));
 }
