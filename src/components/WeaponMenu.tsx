@@ -19,9 +19,9 @@ const BIS_AUGMENTS = [
 ];
 const BUDGET_AUGMENTS = [
   "Mega Triyal",
-  "Wardro Triyal",
-  "Halphinale LC",
-  "Gladia Soul LC",
+  "Glan Gigas Maste LC",
+  "Lux Halphinale LC",
+  "Gran Gladia Soul LC",
 ];
 
 const EX_COMBOS: ExCombo[] = [

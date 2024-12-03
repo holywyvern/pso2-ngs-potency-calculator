@@ -234,6 +234,8 @@ export class Equipment {
     this._pp[1](value);
   }
 
+  abandacEquipment() {}
+
   get melee() {
     return round(this.equipment.reduce((i, e) => i * e.melee, 1));
   }
@@ -292,10 +294,10 @@ export function useEquipment() {
 
 export function useEquipmentState() {
   const classId = useState(0);
-  const weaponId = useState(-1);
-  const armor1Id = useState(-1);
-  const armor2Id = useState(-1);
-  const armor3Id = useState(-1);
+  const weaponId = useState(0);
+  const armor1Id = useState(10);
+  const armor2Id = useState(10);
+  const armor3Id = useState(10);
   const weaponAugmentIds = useState(() => [-1, -1, -1, -1, -1, -1, -1]);
   const armor1AugmentIds = useState(() => [-1, -1, -1, -1, -1, -1, -1]);
   const armor2AugmentIds = useState(() => [-1, -1, -1, -1, -1, -1, -1]);

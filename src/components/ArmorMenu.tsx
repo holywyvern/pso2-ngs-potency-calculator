@@ -23,13 +23,13 @@ const FLOOR_BUILD: string[] = [
 ];
 
 const BUDGET_BUILD: string[] = [
-  "Mega Triyal",
   "Wardro Triyal",
-  "Halphinale LC",
-  "Gigas Maste LC",
-  "Gladia Soul LC",
-  "Grand Dread Keeper LC",
-  "Highkvar Domina LC",
+  "Giga Triyal LC",
+  "Lux Halphinale LC",
+  "Glan Gigas Maste LC",
+  "Gran Gladia Soul LC",
+  "Grand Dread Keeper II LC",
+  "Highstira Domina LC",
 ];
 
 export function ArmorMenu({ index }: { index: number }) {

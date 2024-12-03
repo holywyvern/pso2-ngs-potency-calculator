@@ -3,6 +3,7 @@ import { Window } from "../design/Window";
 import { displayNumber, numberFormatter } from "../utils/formatters";
 import { ClassSelect } from "./ClassSelect";
 
+
 export function PlayerStats() {
   const equipment = useEquipment();
   return (
